@@ -5,7 +5,7 @@ from tqdm import tqdm
 from utils import *
 
 DATASET_TRAIN_PATH = r'D:\ISO\XLTN-dataset'
-SAVE_PATH = r'D:\ISO\XLTN-GMM'
+SAVE_PATH = r'GMMs'
 
 
 def train_gmm(speaker_dir):

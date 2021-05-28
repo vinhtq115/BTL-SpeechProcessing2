@@ -3,7 +3,7 @@ import pickle
 from utils import *
 
 FILE_TO_PREDICT = '17021332_mix.wav'
-GMM_DIR = r'D:\ISO\XLTN-GMM'
+GMM_DIR = r'GMMs'
 
 gmms = []
 speakers = []
