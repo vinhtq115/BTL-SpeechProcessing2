@@ -1,0 +1,5 @@
+tqdm
+python_speech_features
+scikit-learn
+numpy
+scipy
