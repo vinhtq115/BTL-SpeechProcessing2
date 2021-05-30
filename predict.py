@@ -2,7 +2,7 @@ import os
 import pickle
 from utils import *
 
-FILE_TO_PREDICT = 'test_17021357_4.wav'
+FILE_TO_PREDICT = 'samples/17021357_4.wav'
 GMM_DIR = r'GMM-delta'
 
 gmms = []
