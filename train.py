@@ -5,7 +5,7 @@ from tqdm import tqdm
 from utils import *
 
 DATASET_TRAIN_PATH = r'D:\ISO\XLTN-dataset'
-SAVE_PATH = r'GMMs'
+SAVE_PATH = r'GMM-deltadelta'
 
 
 def train_gmm(speaker_dir):
@@ -22,7 +22,7 @@ def train_gmm(speaker_dir):
 
     print('Extracting features...')
     for file in tqdm(wav_files):
-        current_audio_feature = extract_features(file)
+        current_audio_feature = extract_features(file, return_deltadelta=False)
         if stacked_feature.size == 0:
             stacked_feature = current_audio_feature
         else:
@@ -43,4 +43,3 @@ for root, _, files in os.walk(DATASET_TRAIN_PATH):
     # Train gmm for each speaker
     train_gmm(root)
 
-print('Train complete.')

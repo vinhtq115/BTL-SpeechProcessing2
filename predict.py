@@ -2,8 +2,8 @@ import os
 import pickle
 from utils import *
 
-FILE_TO_PREDICT = '17021332_mix.wav'
-GMM_DIR = r'GMMs'
+FILE_TO_PREDICT = 'test_17021357_4.wav'
+GMM_DIR = r'GMM-delta'
 
 gmms = []
 speakers = []
@@ -15,7 +15,7 @@ for root, _, files in os.walk(GMM_DIR):
             gmm = pickle.load(open(os.path.join(root, file), 'rb'))
             gmms.append(gmm)
 
-feature = extract_features(FILE_TO_PREDICT)
+feature = extract_features(FILE_TO_PREDICT, return_deltadelta=False)
 score_of_individual_comparision = np.zeros(len(gmms))
 for i in range(len(gmms)):
     gmm = gmms[i]  # checking with each model one by one

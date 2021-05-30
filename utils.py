@@ -31,16 +31,22 @@ def calculate_delta(data):
     return deltas
 
 
-def extract_features(audio_path):
+def extract_features(audio_path, return_deltadelta: bool):
     """
     Extract 20-dim MFCC features from an audio, performs Cepstral Mean Subtraction
     and combines delta to make it 40-dim feature vector.
     :param audio_path: Path to audio file
-    :return: 40-dim feature vector (MFCC + delta)
+    :param return_deltadelta: Should result feature vector include delta delta
+    :return: 40-dim or 60-dim (if return_deltadelta is True) feature vector
     """
     sr, audio = read(audio_path)
     mfcc_feature = mfcc(audio, sr, 0.025, 0.01, 20, nfft=1200, appendEnergy=True)
     mfcc_feature = preprocessing.scale(mfcc_feature)  # Cepstral Mean Subtraction
     delta = calculate_delta(mfcc_feature)
-    combined = np.hstack((mfcc_feature, delta))
-    return combined
+    if not return_deltadelta:
+        combined = np.hstack((mfcc_feature, delta))
+        return combined
+    else:
+        deltadelta = calculate_delta(delta)
+        combined = np.hstack((mfcc_feature, delta, deltadelta))
+        return combined
