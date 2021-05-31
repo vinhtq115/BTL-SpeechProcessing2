@@ -62,13 +62,8 @@ def recognize():
 
     # Check if valid audio file is uploaded
     uploaded_audio_file = request.files[next(iter(request.files))]
-    bytes_value = uploaded_audio_file.stream.read()  # <class 'bytes'>
-    bytes_io = io.BytesIO(bytes_value)
-    # uploaded_audio_file.stream.seek(0)
-    # handle, filepath = tempfile.mkstemp()  # Create a temporary file to save uploaded one
-    # uploaded_audio_file.save(filepath)
-    # kind = filetype.guess(filepath)  # Guess filetype
-    kind = filetype.guess(bytes_io)
+    bytes_io = io.BytesIO(uploaded_audio_file.stream.read())
+    kind = filetype.guess(bytes_io)  # Guess filetype
     bytes_io.seek(0)
     if kind is None or kind.mime[:5] != 'audio':  # Cannot guess filetype
         resp = {
@@ -81,16 +76,13 @@ def recognize():
     data, sr = soundfile.read(bytes_io)
     data_mono = librosa.to_mono(data)
     data_resampled = librosa.resample(data_mono, sr, 16000)
-    handle, filepath = tempfile.mkstemp()  # Create a temporary file to save uploaded one
-    # data, sr = librosa.load(a, mono=True, sr=16000)
-    os.close(handle)
-    os.remove(filepath)
-    wave_filepath = filepath + '.wav'
-    soundfile.write(wave_filepath, data_resampled, 16000)
+    filepath = tempfile.TemporaryFile(suffix='.wav')  # Create a temporary file to save uploaded one
+    soundfile.write(filepath, data_resampled, 16000)
+    filepath.seek(0)
 
     # Predict
-    result = is_legit(gmm, wave_filepath)
-    os.remove(wave_filepath)  # Delete temporary file
+    result = is_legit(gmm, filepath)
+    filepath.close()  # Close and destroy temporary file
 
     if result:
         resp = {
