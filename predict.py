@@ -1,29 +1,37 @@
-import os
 import pickle
 from utils import *
 
-FILE_TO_PREDICT = 'samples/17021357_4.wav'
-GMM_DIR = r'GMM-delta'
+return_deltadelta = True
 
-gmms = []
-speakers = []
-for root, _, files in os.walk(GMM_DIR):
-    for file in files:
-        if '.gmm' in file:
-            speaker = file.split('\\')[-1].split('.')[0]
-            speakers.append(speaker)
-            gmm = pickle.load(open(os.path.join(root, file), 'rb'))
-            gmms.append(gmm)
 
-feature = extract_features(FILE_TO_PREDICT, return_deltadelta=False)
-score_of_individual_comparision = np.zeros(len(gmms))
-for i in range(len(gmms)):
-    gmm = gmms[i]  # checking with each model one by one
-    scores = np.array(gmm.score(feature))
-    score_of_individual_comparision[i] = scores.sum()
-print(score_of_individual_comparision)
-winner = np.argmax(score_of_individual_comparision)
-print(winner, score_of_individual_comparision[winner])
-print(29, score_of_individual_comparision[29])
-speaker_detected = speakers[winner]
-print(speaker_detected)
+def predict(gmm_path, wavefile, deltadelta: bool):
+    """
+    Predict whether the uploaded sound matches the speaker's model.
+    :param gmm_path: Path to GMM pickle
+    :param wavefile: Path to audio file
+    :return: True if match, else False.
+    """
+    gmm = pickle.load(open(gmm_path, 'rb'))  # Load GMM model
+    feature = extract_features(wavefile, return_deltadelta=deltadelta)  # Extract features
+    gmm_score = gmm.score(feature)  # Get GMM score of utterance
+    print('GMM score: ' + str(gmm_score))
+
+    if abs(gmm_score) <= 4.0000:
+        return True
+    elif abs(gmm_score) >= 10.0000:
+        return False
+
+    # GMM score between 4 and 10
+    result = gmm.score_samples(feature)
+    avg = abs(gmm_score)
+    ress = {'lower': 0, 'upper': 0}
+    for i in result:
+        if abs(i) <= avg:
+            ress['lower'] += 1
+        else:
+            ress['upper'] += 1
+    print(ress)
+    if ress['lower'] > ress['upper']:
+        return True
+    else:
+        return False
