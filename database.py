@@ -4,7 +4,7 @@ from datetime import datetime
 DATABASE = 'database.sqlite3'
 
 
-def add_attendance(person_id):
+def update_shift(person_id):
     """
     Add or update shift.
     :param person_id: ID of employee
@@ -14,7 +14,7 @@ def add_attendance(person_id):
     # Open connection to database
     with sqlite3.connect(DATABASE) as conn:
         cur = conn.cursor()
-        cur.execute('SELECT * FROM attendances WHERE PersonID = ' + person_id + '')
+        cur.execute('SELECT * FROM shifts WHERE PersonID = ' + person_id + '')
 
         rows = cur.fetchall()
         # If all attendance entries of this person have EndTime, create a new one
@@ -28,18 +28,18 @@ def add_attendance(person_id):
         # If new_shift is True, then attendee begins a new shift. Else, he/she ends the current one.
         current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if new_shift:  # Employee begins a new shift. Add new shift to database.
-            command = "INSERT INTO attendances (PersonID, StartTime) " \
+            command = "INSERT INTO shifts (PersonID, StartTime) " \
                       "VALUES ('{0}','{1}')".format(person_id, current_datetime)
             cur.execute(command)
         else:  # Employee ends an ongoing shift. Update shift's end time.
-            command = "UPDATE attendances SET EndTime = '{0}' " \
+            command = "UPDATE shifts SET EndTime = '{0}' " \
                       "WHERE AttendanceID = {1}".format(current_datetime, current_shift_id)
             cur.execute(command)
 
-        cur.execute('SELECT * FROM attendances WHERE PersonID = ' + person_id + '')
+        cur.execute('SELECT * FROM shifts WHERE PersonID = ' + person_id + '')
 
         return new_shift, current_datetime
 
 
 if __name__ == '__main__':
-    add_attendance('17021357')
+    update_shift('17021357')
