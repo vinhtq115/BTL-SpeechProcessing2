@@ -41,5 +41,21 @@ def update_shift(person_id):
         return new_shift, current_datetime
 
 
-if __name__ == '__main__':
-    update_shift('17021357')
+def list_shift(person_id, show_last: int = 10):
+    """
+    List an employee's shift.
+    :param person_id: Employee's ID
+    :param show_last: Show last n number of shift
+    :return: Array of recent shifts
+    """
+    assert show_last is not None
+    assert show_last > 0
+
+    # Open connection to database
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM shifts WHERE PersonID = '{0}' ORDER BY AttendanceID DESC".format(person_id))
+
+        rows = cur.fetchall()
+
+        return rows[:show_last]
