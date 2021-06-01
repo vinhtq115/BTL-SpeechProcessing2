@@ -1,6 +1,5 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import soundfile
-import json
 import re
 import librosa
 import os
@@ -24,14 +23,14 @@ def recognize():
             'status': 1,
             'message': 'Missing id.'
         }
-        return json.dumps(resp)
+        return jsonify(resp)
     s_id = request.form.get('id')
     if not id_pattern.match(s_id):
         resp = {
             'status': 2,
             'message': 'ID in wrong format.'
         }
-        return json.dumps(resp)
+        return jsonify(resp)
 
     # Get GMM model matching ID
     gmm = ''
@@ -44,7 +43,7 @@ def recognize():
             'status': 3,
             'message': 'ID not recognized. Please contact the administrators if this is a mistake.'
         }
-        return json.dumps(resp)
+        return jsonify(resp)
 
     # Check if the POST request has the file part
     if len(request.files) == 0:  # If 0 files were found, return error
@@ -52,13 +51,13 @@ def recognize():
             'status': 4,
             'message': 'No files were uploaded.'
         }
-        return json.dumps(resp)
+        return jsonify(resp)
     elif len(request.files) != 1:  # More than 1 file were found, return error
         resp = {
             'status': 5,
             'message': 'Too many files were uploaded. Only 1 is accepted.'
         }
-        return json.dumps(resp)
+        return jsonify(resp)
 
     # Check if valid audio file is uploaded
     uploaded_audio_file = request.files[next(iter(request.files))]
@@ -70,7 +69,7 @@ def recognize():
             'status': 6,
             'message': 'Uploaded file is not an audio file.'
         }
-        return json.dumps(resp)
+        return jsonify(resp)
 
     # Read audio bytes, downsample to 16kHz and convert to mono, then save it to disk as WAVE file
     data, sr = soundfile.read(bytes_io)
@@ -94,14 +93,14 @@ def recognize():
                        ('begins a new shift at {0}'.format(recorded_date) if is_new_shift
                         else 'ends current shift at {0}'.format(recorded_date))
         }
-        return json.dumps(resp)
+        return jsonify(resp)
     else:  # Speaker unrecognized.
         resp = {
             'status': 0,
             'recognized': 0,
             'message': 'User not recognized. Please try again.'
         }
-        return json.dumps(resp)
+        return jsonify(resp)
 
 
 if __name__ == '__main__':
