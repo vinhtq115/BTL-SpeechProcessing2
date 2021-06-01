@@ -7,6 +7,7 @@ import os
 import io
 import tempfile
 import filetype
+from database import *
 from predict import predict
 
 app = Flask(__name__)
@@ -83,14 +84,18 @@ def recognize():
     result = predict(gmm, filepath, return_deltadelta)
     filepath.close()  # Close and destroy temporary file
 
-    if result:
+    if result:  # Speaker recognized
+        is_new_shift, recorded_date = update_shift(s_id)
+        s_name = get_name(s_id)
         resp = {
             'status': 0,
             'recognized': 1,
-            'message': 'User recognized.'
+            'message': 'Employee {0} '.format(s_name) +
+                       ('begins a new shift at {0}'.format(recorded_date) if is_new_shift
+                        else 'ends current shift at {0}'.format(recorded_date))
         }
         return json.dumps(resp)
-    else:
+    else:  # Speaker unrecognized.
         resp = {
             'status': 0,
             'recognized': 0,

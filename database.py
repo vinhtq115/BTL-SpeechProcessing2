@@ -59,3 +59,21 @@ def list_shift(person_id, show_last: int = 10):
         rows = cur.fetchall()
 
         return rows[:show_last]
+
+
+def get_name(person_id):
+    """
+    Get employee's name.
+    :param person_id: Employee's ID
+    :return: Name
+    """
+    # Open connection to database
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT PersonName FROM persons WHERE PersonID = '{0}'".format(person_id))
+        data = cur.fetchone()
+        return data[0]
+
+
+if __name__ == '__main__':
+    print(get_name('17021357'))
