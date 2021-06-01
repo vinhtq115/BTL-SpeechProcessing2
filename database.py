@@ -1,0 +1,45 @@
+import sqlite3
+from datetime import datetime
+
+DATABASE = 'database.sqlite3'
+
+
+def add_attendance(person_id):
+    """
+    Add or update shift.
+    :param person_id: ID of employee
+    :return: True if new shift, else False
+    :return: Current datetime
+    """
+    # Open connection to database
+    with sqlite3.connect(DATABASE) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM attendances WHERE PersonID = ' + person_id + '')
+
+        rows = cur.fetchall()
+        # If all attendance entries of this person have EndTime, create a new one
+        new_shift = True
+        for row in rows:
+            if row[3] is None:
+                new_shift = False
+                current_shift_id = row[0]
+                break
+
+        # If new_shift is True, then attendee begins a new shift. Else, he/she ends the current one.
+        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if new_shift:  # Employee begins a new shift. Add new shift to database.
+            command = "INSERT INTO attendances (PersonID, StartTime) " \
+                      "VALUES ('{0}','{1}')".format(person_id, current_datetime)
+            cur.execute(command)
+        else:  # Employee ends an ongoing shift. Update shift's end time.
+            command = "UPDATE attendances SET EndTime = '{0}' " \
+                      "WHERE AttendanceID = {1}".format(current_datetime, current_shift_id)
+            cur.execute(command)
+
+        cur.execute('SELECT * FROM attendances WHERE PersonID = ' + person_id + '')
+
+        return new_shift, current_datetime
+
+
+if __name__ == '__main__':
+    add_attendance('17021357')

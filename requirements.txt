@@ -5,3 +5,5 @@ numpy
 scipy
 Flask
 filetype
+librosa
+soundfile
