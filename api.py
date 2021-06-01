@@ -103,5 +103,58 @@ def recognize():
         return jsonify(resp)
 
 
+@app.route('/list_shift', methods=['GET'])
+def list_shift():
+    # Check ID
+    s_id = request.args.get('id', default=None)
+    if s_id is None:  # Missing id
+        resp = {
+            'status': 1,
+            'message': 'Missing id.'
+        }
+        return jsonify(resp)
+    if not id_pattern.match(s_id):  # Check if ID is in correct format
+        resp = {
+            'status': 2,
+            'message': 'ID in wrong format.'
+        }
+        return jsonify(resp)
+
+    # Check if ID exists
+    id_exists = False
+    for fname in os.listdir(GMM_dir):
+        if fname.startswith(s_id):
+            id_exists = True
+            break
+    if not id_exists:  # ID not recognized.
+        resp = {
+            'status': 3,
+            'message': 'ID not recognized. Please contact the administrators if this is a mistake.'
+        }
+        return jsonify(resp)
+
+    # Show last n shifts
+    n = request.args.get('last_n', default=10)
+    try:
+        n = int(n)
+    except ValueError:
+        n = None
+    if not isinstance(n, int) or n < 1:
+        resp = {
+            'status': 4,
+            'message': 'Number of recent shifts must be in integer and higher than 0.'
+        }
+        return jsonify(resp)
+
+    # Get recent shifts
+    last_n_shifts = list_shifts(s_id, n)
+    resp = {
+        'status': 0,
+        'data': last_n_shifts
+    }
+
+    return jsonify(resp)
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

@@ -4,7 +4,7 @@ from datetime import datetime
 DATABASE = 'database.sqlite3'
 
 
-def update_shift(person_id):
+def update_shift(person_id: str):
     """
     Add or update shift.
     :param person_id: ID of employee
@@ -41,7 +41,7 @@ def update_shift(person_id):
         return new_shift, current_datetime
 
 
-def list_shift(person_id, show_last: int = 10):
+def list_shifts(person_id: str, show_last: int = 10):
     """
     List an employee's shift.
     :param person_id: Employee's ID
@@ -58,7 +58,12 @@ def list_shift(person_id, show_last: int = 10):
 
         rows = cur.fetchall()
 
-        return rows[:show_last]
+        data = []
+        for row in rows[:show_last]:
+            r_dict = {'id': row[0], 'employeeID': row[1], 'startDate': row[2], 'endDate': row[3]}
+            data.append(r_dict)
+
+        return data
 
 
 def get_name(person_id):
@@ -73,7 +78,3 @@ def get_name(person_id):
         cur.execute("SELECT PersonName FROM persons WHERE PersonID = '{0}'".format(person_id))
         data = cur.fetchone()
         return data[0]
-
-
-if __name__ == '__main__':
-    print(get_name('17021357'))
