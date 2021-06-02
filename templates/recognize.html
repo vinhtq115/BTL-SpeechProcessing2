@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <title>Recognize</title>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">
+                <img src="../static/icons/logo.svg" alt="Logo" width="32" height="32" class="d-inline-block align-text-center">
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="">Check in/out</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="shifts">Check shifts</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="instruction" class="container">
+        <h3>Instruction</h3>
+        <p>
+            <ol>
+                <li>Enter employee ID.</li>
+                <li>Press "Record" and speak for few seconds.</li>
+                <li>Press "Submit" to check in/out.</li>
+            </ol>
+        </p>
+    </div>
+    <div class="container">
+        <form>
+            <div class="form-group">
+                <label for="employeeID"><b>Employee ID:</b></label>
+                <input type="text" class="form-control" name="id" id="employeeID"
+                       placeholder="Enter your employee ID here. E.g. 17021357">
+            </div>
+            <div class="form-group">
+                <label for="controls"><b>Voice recording:</b></label>
+                <div id="controls">
+                    <button id="recordButton" class="btn btn-primary">Record</button>
+                    <button id="pauseButton" class="btn btn-warning" disabled>Pause</button>
+                    <button id="stopButton" class="btn btn-danger" disabled>Stop</button>
+			    </div>
+                <div id="formats">Format: start recording to see sample rate</div>
+                <p><strong>Recordings:</strong></p>
+                <ol id="recordingsList"></ol>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                </div>
+                <div class="modal-body" id="modalContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" id="modalCloseButton" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <script src="../static/js/popper.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+  	<script src="../static/js/app.js"></script>
+</body>
+</html>

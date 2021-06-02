@@ -1,0 +1,24 @@
+body {
+    background-color: lightgrey;
+}
+
+#instruction {
+    margin-top: 16px;
+}
+
+#employeeID {
+    max-width: 28em;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    margin-bottom: 8px;
+}
+
+li .btn {
+    margin-left: 10px;
+    margin-bottom: 30px;
+}

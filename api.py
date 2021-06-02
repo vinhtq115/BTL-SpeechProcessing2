@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import soundfile
 import re
 import librosa
@@ -6,16 +6,20 @@ import os
 import io
 import tempfile
 import filetype
+import mimetypes
 from database import *
 from predict import predict
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 return_deltadelta = True
 GMM_dir = 'GMM-delta' if not return_deltadelta else 'GMM-deltadelta'  # Directory to GMM models
 id_pattern = re.compile('^[0-9]{8}$')  # RegEx pattern to check ID
 
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('text/javascript', '.js')
 
-@app.route('/recognize', methods=['POST'])
+
+@app.route('/recognize_api', methods=['POST'])
 def recognize():
     # Check if the POST request contains valid ID
     if request.form.get('id') is None or request.form.get('id') == '':
@@ -103,7 +107,7 @@ def recognize():
         return jsonify(resp)
 
 
-@app.route('/list_shift', methods=['GET'])
+@app.route('/list_shift_api', methods=['GET'])
 def list_shift():
     # Check ID
     s_id = request.args.get('id', default=None)
@@ -154,6 +158,21 @@ def list_shift():
     }
 
     return jsonify(resp)
+
+
+@app.route('/recognize', methods=['GET'])
+def recognize_web():
+    return render_template('recognize.html')
+
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+
+@app.route('/shifts', methods=['GET'])
+def shifts():
+    return render_template('shifts.html')
 
 
 if __name__ == '__main__':
