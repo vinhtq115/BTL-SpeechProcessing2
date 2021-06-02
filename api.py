@@ -154,6 +154,7 @@ def list_shift():
     last_n_shifts = list_shifts(s_id, n)
     resp = {
         'status': 0,
+        'name': get_name(s_id),
         'data': last_n_shifts
     }
 

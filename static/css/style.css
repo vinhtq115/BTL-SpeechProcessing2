@@ -22,3 +22,7 @@ li .btn {
     margin-left: 10px;
     margin-bottom: 30px;
 }
+
+table {
+    max-width: 100em;
+}

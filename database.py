@@ -60,7 +60,7 @@ def list_shifts(person_id: str, show_last: int = 10):
 
         data = []
         for row in rows[:show_last]:
-            r_dict = {'id': row[0], 'employeeID': row[1], 'startDate': row[2], 'endDate': row[3]}
+            r_dict = {'id': row[0], 'startDate': row[2], 'endDate': row[3]}
             data.append(r_dict)
 
         return data
