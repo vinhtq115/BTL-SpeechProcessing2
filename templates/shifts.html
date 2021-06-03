@@ -39,8 +39,12 @@
             <button id="checkButton" class="btn btn-primary">Check shifts</button>
         </form>
     </div>
+    <br>
     <div class="container">
-        <table class="table">
+        <div id="returnMessage" style="display: none;">
+            <h5>Test message</h5>
+        </div>
+        <table class="table table-hover table-striped">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -48,11 +52,12 @@
                     <th scope="col">End time</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="shiftTable"></tbody>
         </table>
     </div>
     <script src="../static/js/jquery-3.6.0.min.js"></script>
     <script src="../static/js/popper.js"></script>
     <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/shifts.js"></script>
 </body>
 </html>
