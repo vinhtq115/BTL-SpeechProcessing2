@@ -7,6 +7,7 @@ from sklearn import preprocessing
 def calculate_delta(data, coeff):
     """
     Calculate and returns the delta of given feature vector matrix.
+    Source: https://github.com/Atul-Anand-Jha/Speaker-Identification-Python/blob/master/featureextraction.py
     :param data: Feature vector matrix
     :return: Delta of given input
     """
