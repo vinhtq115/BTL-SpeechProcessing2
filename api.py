@@ -68,10 +68,10 @@ def recognize():
     bytes_io = io.BytesIO(uploaded_audio_file.stream.read())
     kind = filetype.guess(bytes_io)  # Guess filetype
     bytes_io.seek(0)
-    if kind is None or kind.mime[:5] != 'audio':  # Cannot guess filetype
+    if kind is None or kind.mime[:5] != 'audio' or kind.extension != 'wav':  # Cannot guess filetype
         resp = {
             'status': 6,
-            'message': 'Uploaded file is not an audio file.'
+            'message': 'Uploaded file is not a WAVE audio file.'
         }
         return jsonify(resp)
 
@@ -84,7 +84,7 @@ def recognize():
     filepath.seek(0)
 
     # Predict
-    result = predict(gmm, filepath, return_deltadelta)
+    result, score = predict(gmm, filepath, return_deltadelta)
     filepath.close()  # Close and destroy temporary file
 
     if result:  # Speaker recognized
@@ -93,6 +93,7 @@ def recognize():
         resp = {
             'status': 0,
             'recognized': 1,
+            'score': str(score),
             'message': 'Employee {0} '.format(s_name) +
                        ('begins a new shift at {0}'.format(recorded_date) if is_new_shift
                         else 'ends current shift at {0}'.format(recorded_date))
@@ -102,6 +103,7 @@ def recognize():
         resp = {
             'status': 0,
             'recognized': 0,
+            'score': str(score),
             'message': 'User not recognized. Please try again.'
         }
         return jsonify(resp)

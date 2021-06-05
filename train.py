@@ -4,7 +4,7 @@ from sklearn.mixture import GaussianMixture
 from tqdm import tqdm
 from utils import *
 
-DATASET_TRAIN_PATH = r'D:\ISO\XLTN-dataset'
+DATASET_TRAIN_PATH = r'E:\XLTN'
 SAVE_PATH = r'GMM-deltadelta'
 
 
@@ -22,7 +22,7 @@ def train_gmm(speaker_dir):
 
     print('Extracting features...')
     for file in tqdm(wav_files):
-        current_audio_feature = extract_features(file, return_deltadelta=False)
+        current_audio_feature = extract_features(file, return_deltadelta=True)
         if stacked_feature.size == 0:
             stacked_feature = current_audio_feature
         else:
@@ -36,10 +36,14 @@ def train_gmm(speaker_dir):
     pickle.dump(gmm, open(os.path.join(SAVE_PATH, speaker + '.gmm'), 'wb'))
 
 
+trained = [r'E:\XLTN\17021311_CaoMinhNhat', r'E:\XLTN\17021332_LeMinhTam', r'E:\XLTN\17021357_TranQuangVinh']
+
 for root, _, files in os.walk(DATASET_TRAIN_PATH):
-    if len(files) == 0:
+    if len(files) == 0 or root in trained:
         continue  # Skip root folder
 
     # Train gmm for each speaker
     train_gmm(root)
 
+# for i in trained:
+#     train_gmm(i)

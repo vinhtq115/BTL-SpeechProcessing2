@@ -4,14 +4,14 @@ from scipy.io.wavfile import read
 from sklearn import preprocessing
 
 
-def calculate_delta(data):
+def calculate_delta(data, coeff):
     """
     Calculate and returns the delta of given feature vector matrix.
     :param data: Feature vector matrix
     :return: Delta of given input
     """
     rows, cols = data.shape
-    deltas = np.zeros((rows, 20))  # Shape: (rows, 20)
+    deltas = np.zeros((rows, coeff))  # Shape: (rows, coeff)
     n = 2
     for i in range(rows):
         index = []
@@ -40,13 +40,14 @@ def extract_features(audio_path, return_deltadelta: bool):
     :return: 40-dim or 60-dim (if return_deltadelta is True) feature vector
     """
     sr, audio = read(audio_path)
-    mfcc_feature = mfcc(audio, sr, 0.025, 0.01, 20, nfft=1200, appendEnergy=True)
+    coeff = 13
+    mfcc_feature = mfcc(audio, sr, 0.025, 0.01, coeff, nfft=1200, appendEnergy=True)
     mfcc_feature = preprocessing.scale(mfcc_feature)  # Cepstral Mean Subtraction
-    delta = calculate_delta(mfcc_feature)
+    delta = calculate_delta(mfcc_feature, coeff)
     if not return_deltadelta:
         combined = np.hstack((mfcc_feature, delta))
         return combined
     else:
-        deltadelta = calculate_delta(delta)
+        deltadelta = calculate_delta(delta, coeff)
         combined = np.hstack((mfcc_feature, delta, deltadelta))
         return combined
